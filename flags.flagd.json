@@ -1,0 +1,26 @@
+{
+  "flags": {
+    "welcome-message": {
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "state": "ENABLED",
+      "defaultVariant": "off",
+      "targeting": {
+        "if": [
+          {
+            "==": [
+              {
+                "var": "deviceType"
+              },
+              "mobile"
+            ]
+          },
+          "off",
+          "on"
+        ]
+      }
+    }
+  }
+}
