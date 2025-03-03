@@ -39,15 +39,12 @@ app.add_middleware(
 
 client = api.get_client()
 client.add_hooks([TracingHook()])
-FLAG_STR="welcome-message"
-
-
 
 @app.get("/api/buy-now")
 def root():
-    show_welcome_message = client.get_boolean_value(FLAG_STR, True)
+    show_new_item = client.get_boolean_value("new-item", True)
 
-    if show_welcome_message:
+    if show_new_item:
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={"message": "Payment successful"},
