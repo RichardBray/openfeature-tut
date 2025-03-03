@@ -24,18 +24,17 @@ def setup_telemetry():
     trace.set_tracer_provider(trace_provider)
 
 setup_telemetry()
-# Instrument FastAPI after setup
 FastAPIInstrumentor.instrument_app(app)
-
-api.set_provider(FlagdProvider())
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+api.set_provider(FlagdProvider())
 
 client = api.get_client()
 client.add_hooks([TracingHook()])
@@ -44,13 +43,13 @@ client.add_hooks([TracingHook()])
 def root():
     show_new_item = client.get_boolean_value("new-item", True)
 
-    if show_new_item:
+    if not show_new_item:
         return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={"message": "Payment successful"},
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message": "Feature not available"}
         )
-    else:
-        return JSONResponse(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            content={"message": "Not authorized"},
-        )
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"message": "Payment successful"}
+    )
